@@ -2,6 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const autoprefixer = require('autoprefixer');
+const CopyPlugin = require("copy-webpack-plugin");
 
 module.exports = {
     entry: './src/index.js',
@@ -19,6 +20,14 @@ module.exports = {
             template: './public/index.html',
         }),
         new MiniCssExtractPlugin(),
+        new CopyPlugin({
+            patterns: [
+                {
+                    from: path.resolve(__dirname, 'public', 'assets'),
+                    to: path.resolve(__dirname, 'dist'),
+                }
+            ]
+        }),
     ],
     optimization: {
         runtimeChunk: 'single',
@@ -33,7 +42,12 @@ module.exports = {
                 test: /\.s[ac]ss$/i,
                 use: [
                         MiniCssExtractPlugin.loader, 
-                        'css-loader', 
+                        {
+                            loader: 'css-loader',
+                            options: {
+                                url: false
+                            }
+                        }, 
                         {
                             loader: 'postcss-loader',
                             options: {

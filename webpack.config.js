@@ -1,6 +1,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const autoprefixer = require('autoprefixer')
+const CopyPlugin = require("copy-webpack-plugin")
 const path = require('path')
 
 module.exports = (env) => {
@@ -20,6 +21,14 @@ module.exports = (env) => {
             }),
             !isDev && new MiniCssExtractPlugin({
                 filename: '[name].[contenthash].css',
+            }),
+            new CopyPlugin({
+                patterns: [
+                    {
+                        from: path.resolve(__dirname, 'public', 'assets'),
+                        to: path.resolve(__dirname, 'dist', 'assets'),                                             
+                    },                    
+                ],
             }),
         ],
         devtool: isDev ? 'inline-source-map' : false,

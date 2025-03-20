@@ -2,13 +2,14 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const autoprefixer = require('autoprefixer')
 const CopyPlugin = require("copy-webpack-plugin")
+const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin")
 const path = require('path')
 
 module.exports = (env) => {
 
     const isDev = env.mode === 'development';
 
-    return {
+    const config = {
         mode: env.mode ?? 'development',
         entry: path.resolve(__dirname, 'src', 'index.js'),
         output: {
@@ -61,5 +62,33 @@ module.exports = (env) => {
                 },
             ],
         },
+        optimization: {
+            minimizer: [             
+                !isDev && new ImageMinimizerPlugin({
+                    minimizer: {
+                        implementation: ImageMinimizerPlugin.imageminMinify,
+                        options: {
+                            plugins: [
+                                "imagemin-gifsicle",
+                                "imagemin-jpegtran",
+                                "imagemin-optipng",
+                                "imagemin-svgo",
+                            ],
+                        },
+                    },
+                    generator: [
+                        {
+                            type: "asset",
+                            implementation: ImageMinimizerPlugin.imageminGenerate,
+                            options: {
+                                plugins: ["imagemin-webp"],
+                            },
+                        },
+                    ],
+                }),
+            ],
+        },
     }
+
+    return config
 }

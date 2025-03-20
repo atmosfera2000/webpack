@@ -3,6 +3,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin")
 const autoprefixer = require('autoprefixer')
 const CopyPlugin = require("copy-webpack-plugin")
 const ImageMinimizerPlugin = require("image-minimizer-webpack-plugin")
+const TerserPlugin = require("terser-webpack-plugin")
 const path = require('path')
 
 module.exports = (env) => {
@@ -63,6 +64,7 @@ module.exports = (env) => {
             ],
         },
         optimization: {
+            minimize: true,
             minimizer: [             
                 !isDev && new ImageMinimizerPlugin({
                     minimizer: {
@@ -86,6 +88,7 @@ module.exports = (env) => {
                         },
                     ],
                 }),
+                !isDev && new TerserPlugin(),
             ],
         },
     }
